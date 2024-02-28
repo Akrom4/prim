@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello HomeController!
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="mainhome">
+		{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+			<p>Bonjour, 
+				{{ app.user.email }} !</p>
+		{% endif %}
+	</div>
+	<div {{ react_component('Hello', { 'fullName': app.user.email }) }}>
+        Chargement... <i class="fas fa-cog fa-spin fa-3x"></i>
+    </div>
+{% endblock %}
