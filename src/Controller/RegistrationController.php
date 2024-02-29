@@ -3,18 +3,23 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
-use App\Security\EmailVerifier;
+use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
@@ -96,24 +101,34 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/resend-verification-email', name: 'resend_verification_email')]
-    public function resendVerificationEmail(Request $request, EntityManagerInterface $entityManager): Response
+    public function resendVerificationEmail(Request $request, CsrfTokenManagerInterface $csrfTokenManager): JsonResponse
     {
+        $token = new CsrfToken('resend_verification_email', $request->headers->get('X-CSRF-TOKEN'));
+        if (!$csrfTokenManager->isTokenValid($token)) {
+            return new JsonResponse(['error' => 'Invalid CSRF token.'], Response::HTTP_FORBIDDEN);
+        }
 
-        /** @var User $user */
         $user = $this->getUser();
-
         if (!$user) {
-            $this->addFlash('error', 'You must be logged in to resend the verification email.');
-            return $this->redirectToRoute('app_login');
+            return new JsonResponse(['error' => 'You must be logged in to resend the verification email.'], Response::HTTP_UNAUTHORIZED);
         }
 
-        // Optionally, check if the user's email is already verified to avoid unnecessary emails
         if ($user->isVerified()) {
-            $this->addFlash('notice', 'Your email is already verified.');
-            return $this->redirectToRoute('app_home');
+            return new JsonResponse(['notice' => 'Your email is already verified.'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Resend the verification email
+        $cache = new FilesystemAdapter();
+        $cacheKey = sprintf('resend_verification_email_%s', $user->getId());
+        $rateLimit = 300; // seconds
+
+        // Attempt to retrieve the cache item
+        $cacheItem = $cache->getItem($cacheKey);
+        if ($cacheItem->isHit() && (time() - $cacheItem->get()) < $rateLimit) {
+            // If the cache item exists and the current time is within the rate limit window, prevent resending
+            return new JsonResponse(['error' => 'Please wait before resending the verification email.'], Response::HTTP_TOO_MANY_REQUESTS);
+        }
+
+        // If the rate limit has passed or the cache item doesn't exist, proceed with sending the email
         $this->emailVerifier->sendEmailConfirmation(
             'app_verify_email',
             $user,
@@ -124,9 +139,11 @@ class RegistrationController extends AbstractController
                 ->htmlTemplate('registration/confirmation_email.html.twig')
         );
 
-        // Provide feedback to the user
-        $this->addFlash('success', 'Verification email resent. Please check your inbox.');
-        return $this->redirectToRoute('app_home');
+        // Update the cache with the current time as the last email sent timestamp
+        $cacheItem->set(time());
+        $cache->save($cacheItem);
+
+        return new JsonResponse(['success' => 'Verification email resent. Please check your inbox.']);
     }
 
 
@@ -137,5 +154,4 @@ class RegistrationController extends AbstractController
         // Render the email_not_verified.html.twig template
         return $this->render('registration/email_not_verified.html.twig');
     }
-
 }

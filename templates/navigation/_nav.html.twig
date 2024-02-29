@@ -1,0 +1,7 @@
+<nav 
+    {{ react_component('Navbar', {
+         'isLoggedIn': app.user is not null, 
+         'isEmailVerified': app.user and app.user.isVerified 
+         }) 
+    }}>
+</nav>

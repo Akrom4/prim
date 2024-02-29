@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Primavera
+{% block title %}Formation Primavera P6
 {% endblock %}
 
 {% block body %}
-	<nav {{ react_component('Navbar', {'isLoggedIn': isLoggedIn}) }} ></nav>
+{% include 'navigation/_nav.html.twig' %}
 {% endblock %}
