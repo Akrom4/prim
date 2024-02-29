@@ -1,4 +1,6 @@
+import { startStimulusApp } from '@symfony/stimulus-bridge';
 import { registerReactControllerComponents } from '@symfony/ux-react';
+
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -8,5 +10,5 @@ import { registerReactControllerComponents } from '@symfony/ux-react';
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
-
+export const app = startStimulusApp(require.context('./controllers', true, /\.(j|t)sx?$/));
 registerReactControllerComponents(require.context('./react/controllers', true, /\.(j|t)sx?$/));
