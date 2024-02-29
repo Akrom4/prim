@@ -6,6 +6,7 @@ import {
   XMarkIcon,
   UserIcon,
   ShoppingCartIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 
 const navigation = [
@@ -138,7 +139,7 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                     />
                   </a>
                 </div>
-                <div className="hidden sm:ml-6 sm:block">
+                <div className="hidden ml-10 sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
                       <a
@@ -158,15 +159,24 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-2 sm:pr-2">
+                {/* Shopping Cart Icon */}
+                <div className="mr-1 sm:mr-4">
+                  <a
+                    href="#"
+                    className="flex items-center text-white hover:bg-red-800 rounded-full p-1"
+                  >
+                    <ShoppingCartIcon className="h-8 w-8" aria-hidden="true" />
+                  </a>
+                </div>
                 {/* Profile dropdown */}
                 {isLoggedIn ? (
-                  <Menu as="div" className="relative ml-3">
+                  <Menu as="div" className="relative ml-1 sm:ml-3">
                     <div>
                       <Menu.Button className="relative flex rounded-full bg-red-800 text-sm">
                         <span className="sr-only">Open user menu</span>
                         <UserIcon
-                          className="h-8 w-8 text-white bg-red-700 rounded-full p-1 hover:bg-red-800 hover:text-white"
+                          className="h-8 w-8 text-white bg-red-700 rounded-full hover:bg-red-800 hover:text-white"
                           aria-hidden="true"
                         />
                       </Menu.Button>

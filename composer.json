@@ -34,7 +34,8 @@
         "symfony/webpack-encore-bundle": "^2.1",
         "symfony/yaml": "7.0.*",
         "symfonycasts/verify-email-bundle": "^1.16",
-        "twig/twig": "^3.8"
+        "twig/twig": "^3.8",
+        "vich/uploader-bundle": "^2.3"
     },
     "config": {
         "allow-plugins": {
