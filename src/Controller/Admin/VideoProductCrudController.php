@@ -58,8 +58,8 @@ class VideoProductCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Video Product')
-            ->setEntityLabelInPlural('Video Products')
+            ->setEntityLabelInSingular('Video')
+            ->setEntityLabelInPlural('Videos')
             ->setSearchFields(['title', 'description', 'price', 'videoName'])
             ->setDefaultSort(['id' => 'DESC']);
     }
