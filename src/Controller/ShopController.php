@@ -38,10 +38,6 @@ class ShopController extends AbstractController
     #[Route('/videos', name: 'videos_index', methods: ['GET'])]
     public function index(VideoProductRepository $videoProductRepository): Response
     {
-        $videos = $videoProductRepository->findAll();
-
-        return $this->render('videos/index.html.twig', [
-            'videos' => $videos,
-        ]);
+        return $this->render('videos/index.html.twig', []);
     }
 }
