@@ -2,10 +2,16 @@
 module.exports = {
   content: ["./assets/**/*.js",
     "./templates/**/*.html.twig",
-    "./assets/react/controllers/*.jsx",],
+    "./assets/react/controllers/*.jsx",
+  ],
   theme: {
     extend: {},
   },
-  plugins: [],
-}
+  corePlugins: {
+    aspectRatio: false,
+  },
+  plugins: [
+    require('@tailwindcss/aspect-ratio'),
+  ],
+} 
 
