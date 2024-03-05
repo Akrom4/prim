@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\VideoProduct;
 use App\Repository\VideoProductRepository;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,8 +38,29 @@ class ShopController extends AbstractController
     }
 
     #[Route('/videos', name: 'videos_index', methods: ['GET'])]
-    public function index(VideoProductRepository $videoProductRepository): Response
+    public function index(): Response
     {
         return $this->render('videos/index.html.twig', []);
+    }
+
+    #[Route('/videos/{id}', name: 'video_detail', methods: ['GET'])]
+    public function detail(VideoProduct $videoProduct): Response
+    {
+        return $this->render('videos/detail.html.twig', [
+            'videoId' => $videoProduct->getId(),
+        ]);
+    }
+
+    #[Route('/api/videos/{id}', name: 'api_video_detail', methods: ['GET'])]
+    public function apiVideoDetail(VideoProduct $videoProduct): JsonResponse
+    {
+        $videoDetail = [
+            'id' => $videoProduct->getId(),
+            'title' => $videoProduct->getTitle(),
+            'price' => $videoProduct->getPrice(),
+            'description' => $videoProduct->getDescription(),
+            'image' => $this->uploaderHelper->asset($videoProduct, 'imageFile'),
+        ];
+        return $this->json($videoDetail);
     }
 }

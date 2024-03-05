@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 const navigation = [
-  { name: "Vidéos", href: "videos" },
+  { name: "Vidéos", href: "/videos" },
   { name: "Formations", href: "#" },
   { name: "Blog", href: "#" },
   { name: "À Propos", href: "#" },
