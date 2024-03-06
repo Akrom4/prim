@@ -29,7 +29,11 @@ export default function VideoDetail({ videoId }) {
   }, [videoId]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-red-800"></div>
+      </div>
+    );
   }
 
   if (!videoProduct) {
@@ -80,7 +84,7 @@ export default function VideoDetail({ videoId }) {
               </a>
               <a
                 href={videoProduct.buyNowHref}
-                className="relative cursor-pointer	 flex items-center justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"
+                className="relative cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"
               >
                 Acheter {formatPrice(videoProduct.price)} <span className="sr-only">, {videoProduct.name}</span>
               </a>

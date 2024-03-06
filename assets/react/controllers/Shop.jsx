@@ -24,6 +24,7 @@ export default function Shop() {
       </div>
     );
   }
+  
   const csrfToken = document
   .querySelector('meta[name="csrf-token"]')
   .getAttribute("content");

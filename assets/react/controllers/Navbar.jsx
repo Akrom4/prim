@@ -165,7 +165,7 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                     href="#"
                     className="flex items-center text-white hover:bg-red-800 rounded-full p-1"
                   >
-                    <ShoppingCartIcon className="h-8 w-8" aria-hidden="true" />
+                    <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                   </a>
                 </div>
                 {/* Profile dropdown */}
@@ -175,7 +175,7 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                       <Menu.Button className="relative flex rounded-full bg-red-800 text-sm">
                         <span className="sr-only">Open user menu</span>
                         <UserIcon
-                          className="h-8 w-8 text-white bg-red-700 rounded-full hover:bg-red-800 hover:text-white"
+                          className="h-6 w-6 text-white bg-red-700 rounded-full hover:bg-red-800 hover:text-white"
                           aria-hidden="true"
                         />
                       </Menu.Button>
@@ -264,7 +264,7 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                   className={classNames(
                     item.current
                       ? "bg-red-900 text-white"
-                      : "text-gray-300 hover:bg-red-700 hover:text-white",
+                      : "text-white hover:bg-red-700 hover:text-gray-300 ",
                     "block rounded-md px-3 py-2 text-base font-medium"
                   )}
                   aria-current={item.current ? "page" : undefined}
