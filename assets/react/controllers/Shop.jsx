@@ -16,7 +16,7 @@ export default function Shop() {
         setIsLoading(false);
       });
   }, []);
-  
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -24,10 +24,10 @@ export default function Shop() {
       </div>
     );
   }
-  
+
   const csrfToken = document
-  .querySelector('meta[name="csrf-token"]')
-  .getAttribute("content");
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("fr-FR", {
@@ -36,7 +36,30 @@ export default function Shop() {
     }).format(price);
   };
 
-
+  const handleAddToCart = (productId) => {
+    fetch("/api/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": csrfToken,
+      },
+      body: JSON.stringify({ productId }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        alert("Product added to cart!");
+        // Here, you might want to trigger a re-fetch of the cart items or update a global state/context if you have one
+      })
+      .catch((error) => {
+        console.error("Error adding item to cart:", error);
+        alert("Failed to add product to cart.");
+      });
+  };
 
   return (
     <div className="bg-white">
@@ -70,12 +93,13 @@ export default function Shop() {
                 </p>
               </div>
               <div className="mt-6 flex justify-around items-center">
-                <a
-                  href={video.href} 
+                <button
+                  onClick={() => handleAddToCart(video.id)}
                   className="relative cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-200"
                 >
-                  Ajouter au panier<span className="sr-only">, {video.name}</span>
-                </a>
+                  Ajouter au panier
+                  <span className="sr-only">, {video.title}</span>
+                </button>
                 <a
                   href={video.buyNowHref}
                   className="relative cursor-pointer	 flex items-center justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"

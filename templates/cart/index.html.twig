@@ -1,0 +1,13 @@
+{# templates/videos/index.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Videos
+{% endblock %}
+
+{% block body %}
+	{% include 'navigation/_nav.html.twig' %}
+	<div 
+        {{ react_component('Cart') }}>
+    </div>
+{% endblock %}

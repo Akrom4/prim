@@ -162,7 +162,7 @@ export default function Navbar({ isLoggedIn, isEmailVerified }) {
                 {/* Shopping Cart Icon */}
                 <div className="mr-1 sm:mr-4">
                   <a
-                    href="#"
+                    href="/cart"
                     className="flex items-center text-white hover:bg-red-800 rounded-full p-1"
                   >
                     <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
