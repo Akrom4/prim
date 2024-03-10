@@ -102,7 +102,7 @@ export default function Shop() {
                 </button>
                 <a
                   href={video.buyNowHref}
-                  className="relative cursor-pointer	 flex items-center justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"
+                  className="relative cursor-pointer flex items-center justify-center rounded-md border border-transparent bg-red-700 px-4 py-2 text-sm font-medium text-white hover:bg-red-800"
                 >
                   Acheter<span className="sr-only">, {video.name}</span>
                 </a>

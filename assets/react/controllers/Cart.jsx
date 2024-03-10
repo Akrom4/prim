@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  CheckIcon,
-  ClockIcon,
-  QuestionMarkCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -37,6 +32,41 @@ export default function Cart() {
     );
   }
 
+  if (cartItems.length === 0) {
+    return (
+      <div className="bg-white">
+        <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8 text-center">
+          <p className="text-lg leading-6 font-medium text-gray-900">Votre panier est vide</p>
+          <p className="mt-2 text-base leading-6 text-gray-500">Il semble que vous n'ayez pas encore choisi de vidéos.</p>
+          <a
+            href="/videos"
+            className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-700 hover:bg-red-800 focus:outline-none"
+          >
+            Découvrez nos vidéos
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  const removeFromCart = (productId) => {
+    fetch("/api/cart/remove", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document
+          .querySelector('meta[name="csrf-token"]')
+          .getAttribute("content"),
+      },
+      body: JSON.stringify({ productId }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        fetchCartItems();
+      })
+      .catch((error) => console.error("Error removing item from cart:", error));
+  };
+
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
@@ -48,11 +78,15 @@ export default function Cart() {
     }).format(price);
   };
 
+  const calculateTotal = (cartItems) => {
+    return cartItems.reduce((total, item) => total + parseFloat(item.price), 0);
+  };
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 pb-24 pt-16 sm:px-6 lg:max-w-7xl lg:px-8">
         <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          Shopping Cart
+          Votre panier
         </h1>
         <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
           <section aria-labelledby="cart-heading" className="lg:col-span-7">
@@ -95,8 +129,8 @@ export default function Cart() {
                       <div className="mt-4 sm:mt-0 sm:pr-9">
                         <div className="absolute right-0 top-0">
                           <button
-                            type="button"
-                            className="-m-2 inline-flex p-2 text-gray-400 hover:text-gray-500"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-gray-400 hover:text-gray-500"
                           >
                             <span className="sr-only">Remove</span>
                             <XMarkIcon className="h-5 w-5" aria-hidden="true" />
@@ -119,64 +153,26 @@ export default function Cart() {
               id="summary-heading"
               className="text-lg font-medium text-gray-900"
             >
-              Order summary
+              Votre commande
             </h2>
 
             <dl className="mt-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <dt className="text-sm text-gray-600">Subtotal</dt>
-                <dd className="text-sm font-medium text-gray-900">$99.00</dd>
-              </div>
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <dt className="flex items-center text-sm text-gray-600">
-                  <span>Shipping estimate</span>
-                  <a
-                    href="#"
-                    className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
-                  >
-                    <span className="sr-only">
-                      Learn more about how shipping is calculated
-                    </span>
-                    <QuestionMarkCircleIcon
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  </a>
-                </dt>
-                <dd className="text-sm font-medium text-gray-900">$5.00</dd>
-              </div>
-              <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-                <dt className="flex text-sm text-gray-600">
-                  <span>Tax estimate</span>
-                  <a
-                    href="#"
-                    className="ml-2 flex-shrink-0 text-gray-400 hover:text-gray-500"
-                  >
-                    <span className="sr-only">
-                      Learn more about how tax is calculated
-                    </span>
-                    <QuestionMarkCircleIcon
-                      className="h-5 w-5"
-                      aria-hidden="true"
-                    />
-                  </a>
-                </dt>
-                <dd className="text-sm font-medium text-gray-900">$8.32</dd>
-              </div>
               <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                 <dt className="text-base font-medium text-gray-900">
-                  Order total
+                  Prix total
                 </dt>
-                <dd className="text-base font-medium text-gray-900">$112.32</dd>
+                <dd className="text-base font-medium text-gray-900">
+                  {formatPrice(calculateTotal(cartItems))}
+                </dd>
               </div>
             </dl>
 
             <div className="mt-6">
               <button
                 type="submit"
-                className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                className="w-full rounded-md border border-transparent bg-red-700 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               >
-                Checkout
+                Procéder au paiement
               </button>
             </div>
           </section>
