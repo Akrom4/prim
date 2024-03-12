@@ -7,6 +7,7 @@ function classNames(...classes) {
 export default function VideoDetail({ videoId }) {
   const [videoProduct, setVideoProduct] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
