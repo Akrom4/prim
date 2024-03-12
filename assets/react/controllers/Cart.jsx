@@ -4,17 +4,18 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  // Use an object to track updating state of individual cart items
+  const [updatingItems, setUpdatingItems] = useState({});
 
   useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  const fetchCartItems = () => {
+    setIsLoading(true);
     fetch("/api/cart")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((data) => {
-        console.log(data.cart || []);
         setCartItems(data.cart || []);
         setIsLoading(false);
       })
@@ -22,7 +23,35 @@ export default function Cart() {
         console.error("Error fetching cart items:", error);
         setIsLoading(false);
       });
-  }, []);
+  };
+
+  const removeFromCart = (productId) => {
+    setUpdatingItems((prev) => ({ ...prev, [productId]: true }));
+    fetch("/api/cart/remove", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document
+          .querySelector('meta[name="csrf-token"]')
+          .getAttribute("content"),
+      },
+      body: JSON.stringify({ productId }),
+    })
+      .then((response) => response.json())
+      .then(() => {
+        setCartItems((currentItems) =>
+          currentItems.filter((item) => item.id !== productId)
+        );
+      })
+      .catch((error) => console.error("Error removing item from cart:", error))
+      .finally(() => {
+        setUpdatingItems((prev) => {
+          const newUpdatingItems = { ...prev };
+          delete newUpdatingItems[productId];
+          return newUpdatingItems;
+        });
+      });
+  };
 
   if (isLoading) {
     return (
@@ -36,8 +65,12 @@ export default function Cart() {
     return (
       <div className="bg-white">
         <div className="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8 text-center">
-          <p className="text-lg leading-6 font-medium text-gray-900">Votre panier est vide</p>
-          <p className="mt-2 text-base leading-6 text-gray-500">Il semble que vous n'ayez pas encore choisi de vidéos.</p>
+          <p className="text-lg leading-6 font-medium text-gray-900">
+            Votre panier est vide
+          </p>
+          <p className="mt-2 text-base leading-6 text-gray-500">
+            Il semble que vous n'ayez pas encore choisi de vidéos.
+          </p>
           <a
             href="/videos"
             className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-700 hover:bg-red-800 focus:outline-none"
@@ -48,24 +81,6 @@ export default function Cart() {
       </div>
     );
   }
-
-  const removeFromCart = (productId) => {
-    fetch("/api/cart/remove", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document
-          .querySelector('meta[name="csrf-token"]')
-          .getAttribute("content"),
-      },
-      body: JSON.stringify({ productId }),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        fetchCartItems();
-      })
-      .catch((error) => console.error("Error removing item from cart:", error));
-  };
 
   const csrfToken = document
     .querySelector('meta[name="csrf-token"]')
@@ -130,10 +145,11 @@ export default function Cart() {
                         <div className="absolute right-0 top-0">
                           <button
                             onClick={() => removeFromCart(item.id)}
+                            disabled={updatingItems[item.id]} // Disable the button if the item is being updated
                             className="text-gray-400 hover:text-gray-500"
                           >
-                            <span className="sr-only">Remove</span>
-                            <XMarkIcon className="h-5 w-5" aria-hidden="true" />
+                            {updatingItems[item.id] ? "" : <XMarkIcon className="h-5 w-5" aria-hidden="true" />}
+                            
                           </button>
                         </div>
                       </div>

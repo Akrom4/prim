@@ -38,7 +38,7 @@ class VideoProduct
     private ?string $description = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?string $price = null;
+    private ?int $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $videoName = null;

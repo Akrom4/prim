@@ -47,7 +47,7 @@ class CartController extends AbstractController
                 $cartData[] = [
                     'id' => $videoProduct->getId(),
                     'title' => $videoProduct->getTitle(),
-                    'price' => $videoProduct->getPrice(),
+                    'price' => $videoProduct->getPriceDisplay(),
                     'thumbnail' => $this->uploaderHelper->asset($videoProduct, 'imageFile'),
                 ];
             }
