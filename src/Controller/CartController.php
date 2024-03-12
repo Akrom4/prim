@@ -67,8 +67,12 @@ class CartController extends AbstractController
 
         $cart = $user->getCart();
         if (!$cart) {
-            return $this->json(['error' => 'Cart not found'], JsonResponse::HTTP_NOT_FOUND);
+            $cart = new Cart();
+            $cart->setUser($user);
+            $em->persist($cart);
+            $em->flush();
         }
+        
         $productId = $data['productId'];
         $product = $em->getRepository(VideoProduct::class)->find($productId);
 

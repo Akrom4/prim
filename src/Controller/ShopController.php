@@ -28,7 +28,7 @@ class ShopController extends AbstractController
             return [
                 'id' => $video->getId(),
                 'title' => $video->getTitle(),
-                'price' => $video->getPrice(),
+                'price' => $video->getPriceDisplay(),
                 'description' => $video->getDescription(),
                 'thumbnail' => $this->uploaderHelper->asset($video, 'imageFile'),
             ];
@@ -57,7 +57,7 @@ class ShopController extends AbstractController
         $videoDetail = [
             'id' => $videoProduct->getId(),
             'title' => $videoProduct->getTitle(),
-            'price' => $videoProduct->getPrice(),
+            'price' => $videoProduct->getPriceDisplay(),
             'description' => $videoProduct->getDescription(),
             'image' => $this->uploaderHelper->asset($videoProduct, 'imageFile'),
         ];

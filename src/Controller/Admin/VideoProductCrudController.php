@@ -28,7 +28,7 @@ class VideoProductCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
             TextareaField::new('description'),
-            MoneyField::new('price')->setCurrency('USD'),
+            MoneyField::new('price')->setCurrency('EUR'),
         ];
 
         // Conditionally add fields based on the page

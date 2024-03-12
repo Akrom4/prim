@@ -21,7 +21,7 @@ class VideoProduct
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    
+
     private ?int $id = null;
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
@@ -37,7 +37,7 @@ class VideoProduct
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?string $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -92,12 +92,17 @@ class VideoProduct
         return $this;
     }
 
-    public function getPrice(): ?string
+    public function getPriceDisplay(): ?float
+    {
+        return $this->price !== null ? $this->price / 100.0 : null;
+    }
+
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    public function setPrice(?string $price): static
+    public function setPrice(?int $price): self
     {
         $this->price = $price;
 
