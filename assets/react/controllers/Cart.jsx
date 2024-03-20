@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon, TrashIcon } from "@heroicons/react/20/solid";
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
@@ -148,7 +148,7 @@ export default function Cart() {
                             disabled={updatingItems[item.id]} // Disable the button if the item is being updated
                             className="text-gray-400 hover:text-gray-500"
                           >
-                            {updatingItems[item.id] ? "" : <XMarkIcon className="h-5 w-5" aria-hidden="true" />}
+                            {updatingItems[item.id] ? "" : <TrashIcon className="h-5 w-5" aria-hidden="true" />}
                             
                           </button>
                         </div>
