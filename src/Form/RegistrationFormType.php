@@ -16,6 +16,7 @@ class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
             ->add('email')
             ->add('agreeTerms', CheckboxType::class, [
@@ -44,6 +45,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
         ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

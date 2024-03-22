@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist'])]
     private ?Cart $cart = null;
 
     public function getId(): ?int
@@ -124,7 +124,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setCart(Cart $cart): static
     {
-        // set the owning side of the relation if necessary
         if ($cart->getUser() !== $this) {
             $cart->setUser($this);
         }
